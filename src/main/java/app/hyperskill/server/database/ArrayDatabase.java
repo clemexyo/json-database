@@ -1,8 +1,8 @@
-package app.hyperskill.server;
+package app.hyperskill.server.database;
 
 import java.util.Arrays;
 
-public class ArrayDatabase implements IDatabase{
+public class ArrayDatabase implements IDatabase {
     private final String[] db;
     private final int size;
 
@@ -12,7 +12,7 @@ public class ArrayDatabase implements IDatabase{
         Arrays.fill(this.db, "");
     }
     @Override
-    public boolean set(String newData, int index) {
+    public boolean set(int index, String newData) {
         if (isValidIndex(index)){
             db[index] = newData;
             return true;
@@ -30,7 +30,7 @@ public class ArrayDatabase implements IDatabase{
 
     @Override
     public boolean delete(int index) {
-        return set("", index);
+        return set(index, "");
     }
 
     private boolean isValidIndex(int index){

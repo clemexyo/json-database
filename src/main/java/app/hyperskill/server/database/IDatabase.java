@@ -1,7 +1,7 @@
-package app.hyperskill.server;
+package app.hyperskill.server.database;
 
 public interface IDatabase {
-    boolean set(String value, int index);
+    boolean set(int index, String value);
 
     String get(int index);
 

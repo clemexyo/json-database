@@ -1,10 +1,11 @@
-package app.hyperskill.server;
+package app.hyperskill.server.database;
 
 import java.util.Objects;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Deprecated
 public class DbController {
     private static final String ERROR = "ERROR";
     private static final String OK = "OK";
@@ -29,7 +30,7 @@ public class DbController {
                 int index = Integer.parseInt(matcher.group(2)) - 1;
                 String text = matcher.group(3);
                 switch (command){
-                    case "set" -> System.out.println(db.set(text, index) ? OK : ERROR);
+                    case "set" -> System.out.println(db.set(index, text) ? OK : ERROR);
                     case "get" -> System.out.println(Objects.requireNonNullElse(db.get(index), ERROR));
                     case "delete" -> System.out.println(db.delete(index) ? OK : ERROR);
                     default -> System.out.println("Something terrible has happened.");
