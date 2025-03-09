@@ -1,7 +1,9 @@
 package app.hyperskill.server;
 
 import app.hyperskill.server.commands.ICommand;
-import app.hyperskill.server.database.ArrayDatabase;
+import app.hyperskill.server.database.JsonDatabase;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -18,28 +20,35 @@ public class Main {
 
 
     public static void main(String[] args) {
-        CommandRegistry registry = new CommandRegistry(new ArrayDatabase(1000));
+        CommandRegistry registry = new CommandRegistry(new JsonDatabase(1000));
 
         // String[] test = "get 1".split(" ", 3);
         // DbController dbController = new DbController(new ArrayDatabase(1000), scanner, pattern);
         // dbController.run();
         System.out.println("Server started!");
-        while(true){
+        String type = "PLACEHOLDER";
+        while(!"exit".equals(type)){
             try(ServerSocket server = new ServerSocket(PORT, 50, InetAddress.getByName(LOCAL_ADDRESS))){
+                // client connect
                 Socket socket = server.accept();
+
+                // get request from client
                 DataInputStream input = new DataInputStream(socket.getInputStream());
-                String msg = input.readUTF();
-                if("exit command".equals(msg)){
-                    break;
-                }
-                System.out.println("Received: " + msg);
+                JsonObject request = JsonParser.parseString(input.readUTF()).getAsJsonObject();
+                System.out.println("Received: " + request);
+
+                // perform request
                 DataOutputStream output  = new DataOutputStream(socket.getOutputStream());
-                String[] inputs = msg.split(" ", 3);
-                if(!registry.hasCommand(inputs[0])){
+                type = request.get("type").getAsString();
+                String key = request.has("key") ? request.get("key").getAsString() : null;
+                String value = request.has("value") ? request.get("value").getAsString() : null;
+                if(!registry.hasCommand(type)){
                     throw new IllegalArgumentException();
                 }
-                ICommand command = registry.getCommand(inputs[0]);
-                String outcome = command.execute(Arrays.copyOfRange(inputs, 1, inputs.length));
+                ICommand command = registry.getCommand(type);
+                String outcome = command.execute(key, value);
+
+                // send response
                 output.writeUTF(outcome);
                 System.out.println(outcome);
             } catch (IOException e) {

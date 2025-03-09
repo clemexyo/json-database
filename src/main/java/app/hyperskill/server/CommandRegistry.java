@@ -13,6 +13,7 @@ public class CommandRegistry {
         register("get", new GetCommand(db));
         register("set", new SetCommand(db));
         register("delete", new DeleteCommand(db));
+        register("exit", new ExitCommand());
     }
 
     public ICommand getCommand(String name) {

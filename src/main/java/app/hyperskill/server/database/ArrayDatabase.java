@@ -2,6 +2,7 @@ package app.hyperskill.server.database;
 
 import java.util.Arrays;
 
+/*@Deprecated
 public class ArrayDatabase implements IDatabase {
     private final String[] db;
     private final int size;
@@ -36,4 +37,4 @@ public class ArrayDatabase implements IDatabase {
     private boolean isValidIndex(int index){
         return index < size && index > -1;
     }
-}
+}*/

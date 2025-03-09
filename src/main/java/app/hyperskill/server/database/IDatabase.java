@@ -1,9 +1,10 @@
 package app.hyperskill.server.database;
 
 public interface IDatabase {
-    boolean set(int index, String value);
+    void set(String key, String value);
 
-    String get(int index);
+    String get(String key);
 
-    boolean delete(int index);
+    boolean delete(String key);
+
 }

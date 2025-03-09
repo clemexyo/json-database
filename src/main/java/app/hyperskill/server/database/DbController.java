@@ -5,7 +5,7 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Deprecated
+/*@Deprecated
 public class DbController {
     private static final String ERROR = "ERROR";
     private static final String OK = "OK";
@@ -44,4 +44,4 @@ public class DbController {
             }
         }while(!"exit".equals(input));
     }
-}
+}*/

@@ -1,6 +1,7 @@
 package app.hyperskill.server.commands;
 
 import app.hyperskill.server.database.IDatabase;
+import com.google.gson.JsonObject;
 
 public class SetCommand implements ICommand{
     private static final String ERROR = "ERROR";
@@ -13,10 +14,15 @@ public class SetCommand implements ICommand{
     }
 
     @Override
-    public String execute(String[] args) {
-        if (args.length != 2){
-            throw new IllegalArgumentException("Invalid arguments for delete command");
+    public String execute(String key, String value) {
+        JsonObject response = new JsonObject();
+        if (key != null && value != null){
+            db.set(key, value);
+            response.addProperty("response", OK);
         }
-        return db.set(Integer.parseInt(args[0]), args[1]) ? OK : ERROR;
+        else{
+            response.addProperty("response", ERROR);
+        }
+        return response.toString();
     }
 }

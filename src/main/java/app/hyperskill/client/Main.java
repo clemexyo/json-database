@@ -8,6 +8,8 @@ import java.net.Socket;
 
 
 import com.beust.jcommander.JCommander;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class Main {
     private static final String LOCAL_ADDRESS = "127.0.0.1";
@@ -19,24 +21,16 @@ public class Main {
             DataOutputStream output = new DataOutputStream(socket.getOutputStream())) {
             System.out.println("Client started!");
 
-            ArgsParser argsParser = new ArgsParser();
+            ArgsParserV2 argsParserV2 = new ArgsParserV2();
             JCommander.newBuilder()
-                    .addObject(argsParser)
+                    .addObject(argsParserV2)
                     .build()
                     .parse(args);
-
-            String toSend = String.format("%s %d", argsParser.getType(), argsParser.getIndex() - 1);
-            if(!argsParser.getType().equals("exit")){
-                if(argsParser.getMessage() != null){
-                    toSend += " " + argsParser.getMessage();
-                }
-                output.writeUTF(toSend);
-                System.out.println("Sent: " + toSend);
-                System.out.println("Received: " + input.readUTF());
-            }
-            else{
-                output.writeUTF("exit command");
-            }
+            Gson gson = new GsonBuilder().create();
+            String toSend = gson.toJson(new ClientRequest(argsParserV2.getType(), argsParserV2.getKey(), argsParserV2.getValue()));
+            System.out.printf("Sent: %s%n", toSend);
+            output.writeUTF(toSend);
+            System.out.println("Recevied: " + input.readUTF());
         } catch (IOException e) {
             System.out.println("something terrible has happened.");
         }

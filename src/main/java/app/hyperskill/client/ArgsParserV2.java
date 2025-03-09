@@ -4,26 +4,25 @@ import app.hyperskill.client.validators.CommandTypeValidator;
 import app.hyperskill.client.validators.NonEmptyDataValidator;
 import com.beust.jcommander.Parameter;
 
-public class ArgsParser {
+public class ArgsParserV2 {
     @Parameter(names = {"-t", "--type"}, validateWith = CommandTypeValidator.class, description = "type of the operation")
     public String type;
 
-    @Parameter(names = { "-i", "--index" }, description = "index inside database")
-    public int index;
+    @Parameter(names = { "-k", "--key" }, description = "key inside database")
+    public String key;
 
-    @Parameter(names = {"-m", "--message"}, validateWith = NonEmptyDataValidator.class, description = "data for the operation")
-    public String message;
+    @Parameter(names = {"-v", "--value"}, validateWith = NonEmptyDataValidator.class, description = "value for the key")
+    public String value;
 
     public String getType() {
         return type;
     }
 
-    public int getIndex() {
-        return index;
+    public String getKey() {
+        return key;
     }
 
-    public String getMessage() {
-        return message;
+    public String getValue() {
+        return value;
     }
-
 }

@@ -20,6 +20,13 @@
   <name>json-database</name>
   <url>http://maven.apache.org</url>
   <dependencies>
+    <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>2.12.1</version>
+    </dependency>
+
     <!-- https://mvnrepository.com/artifact/com.beust/jcommander -->
     <dependency>
       <groupId>com.beust</groupId>
