@@ -14,6 +14,9 @@ public class ArgsParserV2 {
     @Parameter(names = {"-v", "--value"}, validateWith = NonEmptyDataValidator.class, description = "value for the key")
     public String value;
 
+    @Parameter(names = {"-in"}, description = "name of the file to read the request, this will be used if command type is -in")
+    public String fileName;
+
     public String getType() {
         return type;
     }
@@ -24,5 +27,9 @@ public class ArgsParserV2 {
 
     public String getValue() {
         return value;
+    }
+
+    public String getFileName() {
+        return fileName;
     }
 }
