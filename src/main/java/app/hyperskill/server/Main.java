@@ -11,20 +11,16 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Arrays;
+import java.nio.file.Path;
 
 public class Main {
     private static final String LOCAL_ADDRESS = "127.0.0.1";
     private static final int PORT = 23456;
-    // private static final Pattern PATTERN = Pattern.compile("^(set|get|delete) (\\d+)(?: (.+))?$");
 
 
     public static void main(String[] args) {
-        CommandRegistry registry = new CommandRegistry(new JsonDatabase(1000));
+        CommandRegistry registry = new CommandRegistry(new JsonDatabase(Path.of(System.getProperty("user.dir") + "/src/main/java/app/hyperskill/server/data/database.json")));
 
-        // String[] test = "get 1".split(" ", 3);
-        // DbController dbController = new DbController(new ArrayDatabase(1000), scanner, pattern);
-        // dbController.run();
         System.out.println("Server started!");
         String type = "PLACEHOLDER";
         while(!"exit".equals(type)){

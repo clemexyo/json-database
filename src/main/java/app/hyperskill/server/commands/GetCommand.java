@@ -1,5 +1,6 @@
 package app.hyperskill.server.commands;
 
+import app.hyperskill.server.database.DbRecord;
 import app.hyperskill.server.database.IDatabase;
 import com.google.gson.JsonObject;
 
@@ -18,11 +19,11 @@ public class GetCommand implements ICommand {
     @Override
     public String execute(String key, String value) {
         if (key != null && value == null){
-            String dbValue = db.get(key);
+            DbRecord dbValue = db.get(key);
             JsonObject response = new JsonObject();
             if(dbValue != null){
                 response.addProperty("response", OK);
-                response.addProperty("value", dbValue);
+                response.addProperty("value", dbValue.value());
             }
             else{
                 response.addProperty("response", ERROR);
