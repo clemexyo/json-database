@@ -1,8 +1,6 @@
 package app.hyperskill.server.database;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonIOException;
+import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.*;
@@ -38,9 +36,16 @@ public class JsonDatabase implements IDatabase{
                 }
             }
             else{
-                try(Reader reader = new FileReader(path.toFile())){
+                try (Reader reader = new FileReader(path.toFile())) {
+                    JsonElement jsonElement = JsonParser.parseReader(reader);
+
+                    // If the JSON is an empty object `{}`, treat it as an empty array `[]`
+                    if (jsonElement.isJsonObject() && jsonElement.getAsJsonObject().entrySet().isEmpty()) {
+                        jsonElement = new JsonArray();
+                    }
+
                     Type listType = new TypeToken<List<DbRecord>>() {}.getType();
-                    this.db = gson.fromJson(reader, listType);
+                    this.db = gson.fromJson(jsonElement, listType);
                     this.path = path;
                 }
             }

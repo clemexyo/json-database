@@ -4,11 +4,11 @@ import com.google.gson.annotations.Expose;
 
 public class Request {
     @Expose
-    private final String type;
+    private  String type;
     @Expose
-    private final String key;
+    private  String key;
     @Expose
-    private final String value;
+    private  String value;
 
     public Request(String type, String key, String value) {
         this.type = type;
@@ -26,5 +26,17 @@ public class Request {
 
     public String getValue() {
         return value;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 }

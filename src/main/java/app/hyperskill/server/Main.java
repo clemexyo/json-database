@@ -90,8 +90,7 @@ class ClientHandler implements Runnable {
             if ("exit".equals(type)) {
                 Main.isRunning.set(false);
                 serverSocket.close();
-                output.writeUTF("{\"response\":\"Server is shutting down.\"}");
-                System.out.println("Server shutdown initiated by client request.");
+                output.writeUTF(registry.getCommand("exit").execute("", ""));
                 return;
             }
 

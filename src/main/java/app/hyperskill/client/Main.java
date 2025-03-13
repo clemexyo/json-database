@@ -9,9 +9,7 @@ import java.net.Socket;
 
 
 import com.beust.jcommander.JCommander;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 
 public class Main {
     private static final String LOCAL_ADDRESS = "127.0.0.1";
@@ -29,19 +27,39 @@ public class Main {
                     .build()
                     .parse(args);
             Gson gson = new GsonBuilder().create();
-            String requestJson = "";
+            Request request = new Request("", "", null);
             if(argsParserV2.fileName != null){
                 try(FileReader reader = new FileReader(System.getProperty("user.dir") + "/src/main/java/app/hyperskill/client/data/" + argsParserV2.getFileName())){
-                    requestJson = JsonParser.parseReader(reader).toString();
+                    JsonElement element = JsonParser.parseReader(reader);
+                    JsonObject object = element.getAsJsonObject();
+
+                    if(object.has("t")){
+                        request.setType(object.get("t").getAsString());
+                    }
+                    if(object.has("type")){
+                        request.setType(object.get("type").getAsString());
+                    }
+                    if(object.has("k")){
+                        request.setKey(object.get("k").getAsString());
+                    }
+                    if(object.has("key")){
+                        request.setKey(object.get("key").getAsString());
+                    }
+                    if(object.has("v")){
+                        request.setValue(object.get("v").getAsString());
+                    }
+                    if(object.has("value")){
+                        request.setValue(object.get("value").getAsString());
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
             else{
-                requestJson = gson.toJson(new Request(argsParserV2.getType(), argsParserV2.getKey(), argsParserV2.getValue()));
+                request = new Request(argsParserV2.getType(), argsParserV2.getKey(), argsParserV2.getValue());
             }
-            System.out.printf("Sent: %s%n", requestJson);
-            output.writeUTF(requestJson);
+            System.out.printf("Sent: %s%n", gson.toJson(request));
+            output.writeUTF(gson.toJson(request));
             System.out.println("Recevied: " + input.readUTF());
         } catch (IOException e) {
             System.out.println("something terrible has happened.");
