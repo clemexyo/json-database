@@ -33,6 +33,9 @@ public class JsonDatabase implements IDatabase{
             if(created){
                 this.db = new ArrayList<>();
                 this.path = path;
+                try(FileWriter writer = new FileWriter(path.toFile())){
+                    writer.write("[]");
+                }
             }
             else{
                 try(Reader reader = new FileReader(path.toFile())){
