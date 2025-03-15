@@ -1,22 +1,18 @@
 package app.hyperskill.server.database;
 
+import app.hyperskill.server.utils.JsonDbUtils;
 import com.google.gson.*;
-import com.google.gson.reflect.TypeToken;
 
 import java.io.*;
-import java.lang.reflect.Type;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class JsonDatabase implements IDatabase{
-    private final List<DbRecord> db;
-    private final Path path;
+    private final JsonObject dbObject;
+    private final Path dbPath;
     private final Lock readLock;
     private final Lock writeLock;
 
@@ -24,92 +20,44 @@ public class JsonDatabase implements IDatabase{
         ReadWriteLock lock = new ReentrantReadWriteLock();
         readLock = lock.readLock();
         writeLock = lock.writeLock();
-        Gson gson = new Gson();
+
         File dbFile = path.toFile();
-        try{
-            boolean created = dbFile.createNewFile();
-            if(created){
-                this.db = new ArrayList<>();
-                this.path = path;
-                try(FileWriter writer = new FileWriter(path.toFile())){
-                    writer.write("[]");
-                }
-            }
-            else{
-                try (Reader reader = new FileReader(path.toFile())) {
-                    JsonElement jsonElement = JsonParser.parseReader(reader);
-
-                    // If the JSON is an empty object `{}`, treat it as an empty array `[]`
-                    if (jsonElement.isJsonObject() && jsonElement.getAsJsonObject().entrySet().isEmpty()) {
-                        jsonElement = new JsonArray();
-                    }
-
-                    Type listType = new TypeToken<List<DbRecord>>() {}.getType();
-                    this.db = gson.fromJson(jsonElement, listType);
-                    this.path = path;
-                }
-            }
-        } catch (IOException e) {
-            throw new RuntimeException("something went wrong during db creation");
+        if(!dbFile.exists() || dbFile.length() == 0){
+            JsonDbUtils.writeDbToJsonFile(new JsonObject(), path);
         }
 
+        this.dbObject = JsonDbUtils.readDbFromJsonFile(path).getAsJsonObject();
+        this.dbPath = path;
     }
 
     @Override
     public void set(String key, String value) {
-        readLock.lock();
-        boolean updated = false;
-        for(int i = 0; i < db.size(); i++){
-           if(db.get(i).key().equals(key)){
-               db.set(i, new DbRecord(key, value));
-               updated = true;
-               break;
-           }
-        }
-        readLock.unlock();
-        if(!updated){
-            writeLock.lock();
-            db.add(new DbRecord(key, value));
-            writeLock.unlock();
-        }
+        writeLock.lock();
 
-        writeToFile();
+        dbObject.addProperty(key, value);
+        JsonDbUtils.writeDbToJsonFile(dbObject, dbPath);
+
+        writeLock.unlock();
     }
 
     @Override
-    public DbRecord get(String key) {
+    public JsonElement get(String key) {
         readLock.lock();
-        Optional<DbRecord> found = db.stream().filter(dbRecord -> dbRecord.key().equals(key)).findFirst();
+        JsonElement dbValue = dbObject.get(key);
         readLock.unlock();
-        return found.orElse(null);
+
+        return dbValue;
     }
 
     @Override
     public boolean delete(String key) {
-        readLock.lock();
-        boolean updated = false;
-        for(int i = 0; i < db.size(); i++){
-            if(db.get(i).key().equals(key)){
-                db.remove(i);
-                updated = true;
-                break;
-            }
+        if(Objects.nonNull(this.get(key))){
+            writeLock.lock();
+            dbObject.remove(key);
+            JsonDbUtils.writeDbToJsonFile(dbObject, dbPath);
+            writeLock.unlock();
+            return true;
         }
-        readLock.unlock();
-        if(updated){
-            writeToFile();
-        }
-        return updated;
-    }
-
-    private void writeToFile() {
-        writeLock.lock();
-        Gson gson = new Gson();
-        try (FileWriter writer = new FileWriter(path.toFile())) {
-            gson.toJson(db, writer);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        writeLock.unlock();
+        return false;
     }
 }

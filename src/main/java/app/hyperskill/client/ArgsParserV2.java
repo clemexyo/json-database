@@ -3,6 +3,13 @@ package app.hyperskill.client;
 import app.hyperskill.client.validators.CommandTypeValidator;
 import app.hyperskill.client.validators.NonEmptyDataValidator;
 import com.beust.jcommander.Parameter;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
+
+import java.io.IOException;
+import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class ArgsParserV2 {
     @Parameter(names = {"-t", "--type"}, validateWith = CommandTypeValidator.class, description = "type of the operation")
@@ -31,5 +38,17 @@ public class ArgsParserV2 {
 
     public String getFileName() {
         return fileName;
+    }
+
+    @Override
+    public String toString() {
+        if (fileName != null) {
+            try (Reader reader = Files.newBufferedReader(Path.of(System.getProperty("user.dir") + "/src/main/java/app/hyperskill/client/data/" + this.fileName))) {
+                return JsonParser.parseReader(reader).getAsJsonObject().toString();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return new Gson().toJson(this);
     }
 }

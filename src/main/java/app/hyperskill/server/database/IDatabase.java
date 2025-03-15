@@ -1,9 +1,11 @@
 package app.hyperskill.server.database;
 
+import com.google.gson.JsonElement;
+
 public interface IDatabase {
     void set(String key, String value);
 
-    DbRecord get(String key);
+    JsonElement get(String key);
 
     boolean delete(String key);
 
