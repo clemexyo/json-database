@@ -1,6 +1,7 @@
 package app.hyperskill.server.commands;
 
 import app.hyperskill.server.database.IDatabase;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 public class DeleteCommand implements ICommand {
@@ -14,7 +15,7 @@ public class DeleteCommand implements ICommand {
     }
 
     @Override
-    public String execute(String key, String value) {
+    public String execute(JsonElement key, JsonElement value) {
         if (key != null && value == null){
             JsonObject response = new JsonObject();
             if(db.delete(key)){

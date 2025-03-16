@@ -3,10 +3,9 @@ package app.hyperskill.server.database;
 import com.google.gson.JsonElement;
 
 public interface IDatabase {
-    void set(String key, String value);
+    JsonElement get(JsonElement key);
 
-    JsonElement get(String key);
+    void set(JsonElement key, JsonElement value);
 
-    boolean delete(String key);
-
+    boolean delete(JsonElement key);
 }

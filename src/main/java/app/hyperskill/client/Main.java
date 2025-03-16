@@ -31,7 +31,7 @@ public class Main {
             output.writeUTF(requestString);
             System.out.println("Received: " + input.readUTF());
         } catch (IOException e) {
-            System.out.println("something terrible must have happened in the server.");
+            System.out.println("something terrible must have happened in the server. " + e.toString());
         }
     }
 }

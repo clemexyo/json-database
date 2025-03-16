@@ -14,11 +14,11 @@ public class RequestDeserializer implements JsonDeserializer<DbRequest> {
         String commandType = jsonObject.has("t") ? jsonObject.get("t").getAsString() :
                 jsonObject.has("type") ? jsonObject.get("type").getAsString() : null;
 
-        String key = jsonObject.has("k") ? jsonObject.get("k").getAsString() :
-                jsonObject.has("key") ? jsonObject.get("key").getAsString() : null;
+        JsonElement key = jsonObject.has("k") ? jsonObject.get("k") :
+                jsonObject.has("key") ? jsonObject.get("key") : null;
 
-        String value = jsonObject.has("v") ? (jsonObject.get("v").isJsonNull() ? null : jsonObject.get("v").getAsString()) :
-                jsonObject.has("value") ? (jsonObject.get("value").isJsonNull() ? null : jsonObject.get("value").getAsString()) : null;
+        JsonElement value = jsonObject.has("v") ? (jsonObject.get("v").isJsonNull() ? null : jsonObject.get("v")) :
+                jsonObject.has("value") ? (jsonObject.get("value").isJsonNull() ? null : jsonObject.get("value")) : null;
 
         if (commandType == null) {
             throw new JsonParseException("Missing required fields: commandType and key");

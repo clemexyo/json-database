@@ -22,6 +22,8 @@ public class Server {
         System.out.println("Server started!");
         try {
             while (true) {
+                // it's not good practice to pass the server instance here but, it is needed
+                // to stop the server on client's request.
                 service.submit(new ClientHandler(serverSocket.accept(), registry, this));
             }
         } catch (IOException e) {
