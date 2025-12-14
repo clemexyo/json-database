@@ -1,4 +1,4 @@
-# JSON Database
+# Personal JSON Database
 
 A lightweight client/server key–value store implemented in Java 17. The server keeps
 all data inside a JSON document on disk and exposes a socket protocol that accepts
